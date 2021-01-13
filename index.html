@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <script>
+    $(function () {
+      let somaTotal = 0;
+
+      // valores dos planos
+      const valorMaster = 22.9;
+      const valorFit = 56.9;
+      const valorMasterPlus = 67.12;
+      const taxaDeAdesao = 7;
+
+      // valores dos adicionais
+      const adicionalFit60 = 29;
+      const adicionalFit70 = 39;
+      const adicionalFit80 = 80;
+      const adicionalMasterPlus = 29;
+
+      // valores dos descontos %
+      const descontoFit_1_Dependente = 38;
+      const descontoFit_2_Dependente = 50;
+      const descontoMaster_1_Dependente = 33;
+      const descontoMaster_2_Dependente = 43;
+
+      const imprimeTotal = (value) => {
+        $("#somaTotal").val(
+          `R$ ${parseFloat(value).toFixed(2).replace(".", ",")}`
+        );
+      };
+
+      const calculaValorIdade = (plano, valorPlano) => {
+        const idadeTitular = $("#idade-titular").val();
+        let somaIdade = valorPlano;
+        if (idadeTitular >= 60 && idadeTitular <= 69) {
+          if (plano === "fit") {
+            somaIdade = valorPlano + adicionalFit60;
+          } else if (plano === "masterPlus") {
+            somaIdade = valorPlano + adicionalMasterPlus;
+          }
+        } else if (idadeTitular >= 70 && idadeTitular <= 79) {
+          if (plano === "fit") {
+            somaIdade = valorPlano + adicionalFit70;
+          } else if (plano === "masterPlus") {
+            somaIdade = valorPlano + adicionalMasterPlus;
+          }
+        } else if (idadeTitular >= 80) {
+          if (plano === "fit") {
+            somaIdade = valorPlano + adicionalFit80;
+          } else if (plano === "masterPlus") {
+            somaIdade = valorPlano + adicionalMasterPlus;
+          }
+        } else {
+          somaIdade = valorPlano;
+        }
+        console.log(`calculando valor por idade: ${somaIdade}`);
+        return somaIdade;
+      };
+
+      const calculaAdicional = (plano) => {
+        let somaAdicional = 0;
+        if (plano === "fit") {
+          somaAdicional =
+            quantidade60() * adicionalFit60 +
+            quantidade70() * adicionalFit70 +
+            quantidade80() * adicionalFit80
+          ;
+        } else if (plano === "masterPlus") {
+          somaAdicional =
+            quantidade60() * adicionalMasterPlus +
+            quantidade70() * adicionalMasterPlus +
+            quantidade80() * adicionalMasterPlus
+          ;
+        } else {
+          somaAdicional = 0;
+        }
+        console.log(`calculando adicional: ${somaAdicional}`);
+        return somaAdicional;
+      };
+
+      const calculaTaxaDeAdesao = (plano) => {
+        const totalDependentes = quantidade60() + quantidade70() + quantidade80();
+        console.log(`calculando taxa de adesão: ${totalDependentes * taxaDeAdesao}`);
+        return totalDependentes * taxaDeAdesao;
+      };
+
+      const calculaDesconto = (plano, valorTotal) => {
+
+        const totalDependentes = quantidade60() + quantidade70() + quantidade80();
+        let totalDesconto = valorTotal;
+        if (plano === "fit") {
+          if (totalDependentes === 1) {
+            totalDesconto = (valorTotal * descontoFit_1_Dependente) / 100;
+          } else if (totalDependentes > 1) {
+            totalDesconto = (valorTotal * descontoFit_2_Dependente) / 100;
+          }
+        } else if (plano === "masterPlus") {
+          if (totalDependentes === 1) {
+            totalDesconto = (valorTotal * descontoMaster_1_Dependente) / 100;
+          } else if (totalDependentes > 1) {
+            totalDesconto = (valorTotal * descontoMaster_2_Dependente) / 100;
+          }
+        } else {
+          return valorTotal;
+        }
+        console.log(`calculando desconto: ${totalDependentes * taxaDeAdesao}`);
+        return totalDesconto;
+      };
+
+      const somaTudo = (plano, valorPlano) => {
+        return calculaValorIdade(plano, valorPlano) + calculaAdicional(plano) + calculaTaxaDeAdesao(plano);
+      };
+
+      const quantidade60 = (value) => {
+        if (Number.isInteger(value)) {
+          $("#idade-60").val(value);
+          return;
+        }
+        return $("#idade-60").val();
+      };
+
+      const quantidade70 = (value) => {
+        if (Number.isInteger(value)) {
+          $("#idade-70").val(value);
+          return;
+        }
+        return $("#idade-70").val();
+      };
+
+      const quantidade80 = (value) => {
+        if (Number.isInteger(value)) {
+          $("#idade-80").val(value);
+          return;
+        }
+        return $("#idade-80").val();
+      };
+
+      // click do Plano MASTER
+      $("#button-master").click(function () {
+        quantidade60(0);
+        quantidade70(0);
+        quantidade80(0);
+        imprimeTotal(valorMaster);
+      });
+
+      // click do Plano FIT
+      $("#button-fit").click(function () {
+        imprimeTotal(somaTudo('fit', valorFit));
+      });
+
+      // click do Plano MASTER+
+      $("#button-master-plus").click(function () {
+        imprimeTotal(somaTudo('masterPlus', valorMasterPlus));
+      });
+    });
+  </script>
+  <body>
+    <fieldset>
+      <div class="panel panel-primary">
+        <div class="panel-heading">Calculadora Plano</div>
+
+        <div class="panel-body">
+          <div class="form-group">
+            <div class="col-12">
+              <input
+                type="text"
+                id="somaTotal"
+                class="calculator-screen z-depth-1"
+                value="R$: 0,00"
+                disabled
+              />
+            </div>
+          </div>
+
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="col-12 control-label" for="vinculo"
+              >Idade Titular: <h11>*</h11></label
+            >
+            <div class="col-12">
+              <input
+                id="idade-titular"
+                name="vinculo"
+                value="0"
+                min="0"
+                placeholder="Idade Titular"
+                class="form-control input-md"
+                required=""
+                type="Number"
+                maxlength="10"
+              />
+            </div>
+            <!-- Multiple Radios (inline) -->
+          </div>
+          <div class="form-group">
+            <label class="col-12 control-label" for="vinculo"
+              >60 a 69 anos:<h11>*</h11></label
+            >
+            <div class="col-12">
+              <input
+                id="idade-60"
+                name="vinculo"
+                value="0"
+                min="0"
+                placeholder="0"
+                class="form-control input-md"
+                required=""
+                type="number"
+                maxlength="10"
+              />
+            </div>
+
+            <!-- Multiple Radios (inline) -->
+          </div>
+          <div class="form-group">
+            <label class="col-12 control-label" for="vinculo"
+              >70 a 79 anos:<h11>*</h11></label
+            >
+            <div class="col-12">
+              <input
+                id="idade-70"
+                name="vinculo"
+                value="0"
+                min="0"
+                placeholder="0"
+                class="form-control input-md"
+                required=""
+                type="number"
+                maxlength="10"
+              />
+            </div>
+
+            <!-- Multiple Radios (inline) -->
+          </div>
+          <div class="form-group">
+            <label class="col-12 control-label" for="vinculo"
+              >+80 anos:<h11>*</h11></label
+            >
+            <div class="col-12">
+              <input
+                id="idade-80"
+                name="vinculo"
+                value="0"
+                min="0"
+                placeholder="0"
+                class="form-control input-md"
+                required=""
+                type="number"
+                maxlength="10"
+              />
+            </div>
+
+            <!-- Multiple Radios (inline) -->
+          </div>
+
+          <!-- Button (Double) -->
+          <div class="form-group">
+            <label class="col-12 control-label" for="Cadastrar"></label>
+            <div class="col-md-8">
+              <button id="button-master" name="Cadastrar" class="btn btn-blue">
+                MASTER
+              </button>
+              <button id="button-fit" name="Cadastrar" class="btn btn-orange">
+                FIT
+              </button>
+              <button
+                id="button-master-plus"
+                name="Cancelar"
+                class="btn btn-yellow"
+              >
+                MASTER+
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </body>
+</html>
