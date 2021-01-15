@@ -116,13 +116,10 @@
                 somaIdade = valorPlanoFit_3 + adicional70;
               }
             } else if (plano === "masterPlus") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = adicional70;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = 0;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = 0;
-              }
+              imprimeTotal(0);
+              somaIdade = 0;
+              alert('Plano não compativel com a idade!');
+              return;
             }
           } else if (idade >= 80) {
             if (plano === "fit") {
@@ -134,13 +131,10 @@
                 somaIdade = valorPlanoFit_3 + adicional80;
               }
             } else if (plano === "masterPlus") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = adicional80;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = 0;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = 0;
-              }
+              imprimeTotal(0);
+              somaIdade = 0;
+              alert('Plano não compativel com a idade!');
+              return;
             }
           }
           console.log(`calculando valor por idade: ${somaIdade}`);
@@ -162,6 +156,32 @@
           return totalDependentes * taxaDeAdesao;
         };
 
+        const calculaValorFilhos = plano => {
+          const qtdFilhos = parseInt(quantidadeFilhos());
+          const totalBeneficiarios = contaBeneficiarios();
+          let somaIdade = 0;
+
+          if (plano === "fit") {
+              if (totalBeneficiarios === 1) {
+                somaIdade = valorPlanoFit * qtdFilhos;
+              } else if (totalBeneficiarios === 2) {
+                somaIdade = valorPlanoFit_2 * qtdFilhos;
+              } else if (totalBeneficiarios >= 3) {
+                somaIdade = valorPlanoFit_3 * qtdFilhos;
+              }
+            } else if (plano === "masterPlus") {
+              if (totalBeneficiarios === 1) {
+                somaIdade = valorPlanoMasterPlus * qtdFilhos;
+              } else if (totalBeneficiarios === 2) {
+                somaIdade = valorPlanoMasterPlus_2 * qtdFilhos;
+              } else if (totalBeneficiarios >= 3) {
+                somaIdade = valorPlanoMasterPlus_3 * qtdFilhos;
+              }
+            }
+            console.log(`Calculando valor dos filhos: ${somaIdade}`);
+            return somaIdade;
+        };
+
         // click do Plano MASTER
         $("#button-master").click(function () {
           idadeConjugue(0);
@@ -175,7 +195,9 @@
           if(parseInt(idadeConjugue()) > 0) {
             valorTotal += calculaValorIdade('fit', valorPlanoFit, false);
           }
-          valorTotal += calculaTaxaDeAdesao();
+          if(parseInt(quantidadeFilhos()) > 0) {
+            valorTotal += calculaValorFilhos('fit');
+          }
           imprimeTotal(valorTotal);
         });
 
@@ -185,7 +207,9 @@
           if(parseInt(idadeConjugue()) > 0) {
             valorTotal += calculaValorIdade('masterPlus', valorPlanoMasterPlus, false);
           }
-          valorTotal += calculaTaxaDeAdesao();
+          if(parseInt(quantidadeFilhos()) > 0) {
+            valorTotal += calculaValorFilhos('masterPlus');
+          }
           imprimeTotal(valorTotal);
         });
       });
