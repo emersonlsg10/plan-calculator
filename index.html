@@ -15,208 +15,9 @@
     <!------ Include the above in your HEAD tag ---------->
     <link href="css/style.css" rel="stylesheet" />
   </head>
-  <script>
-      $(function () {
-        let somaTotal = 0;
-
-        // valores dos planos
-        const valorPlanoMaster = 22.9;
-        const valorPlanoFit = 56.9;
-        const valorPlanoMasterPlus = 67.12;
-
-        const valorPlanoFit_2 = 35.29;
-        const valorPlanoFit_3 = 28.45;
-
-        const valorPlanoMasterPlus_2 = 44.97;
-        const valorPlanoMasterPlus_3 = 38.25;
-
-        const taxaDeAdesao = 7;
-
-        // adicional por idade
-        const adicional50 = 0;
-        const adicional60 = 29;
-        const adicional70 = 39;
-        const adicional80 = 80;
-
-        const imprimeTotal = (value) => {
-          $("#somaTotal").val(
-            `R$ ${parseFloat(value).toFixed(2).replace(".", ",")}`
-          );
-        };
-
-        const idadeConjugue = (value) => {
-          if (Number.isInteger(value)) {
-            $("#idade-conjugue").val(value);
-            return;
-          }
-          return $("#idade-conjugue").val();
-        };
-
-        const quantidadeFilhos = (value) => {
-          if (Number.isInteger(value)) {
-            $("#quantidade-filhos").val(value);
-            return;
-          }
-          return $("#quantidade-filhos").val();
-        };
-
-        const calculaValorIdade = (
-          plano,
-          valorPlano,
-          isTitular
-        ) => {
-          const totalBeneficiarios = contaBeneficiarios();
-          const idade = isTitular
-            ? $("#idade-titular").val()
-            : $("#idade-conjugue").val();
-          let somaIdade = valorPlano;
-          if (idade <= 59) {
-            if (plano === "fit") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoFit;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoFit_2;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoFit_3;
-              }
-            } else if (plano === "masterPlus") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoMasterPlus;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoMasterPlus_2;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoMasterPlus_3;
-              }
-            }
-          } else if (idade >= 60 && idade <= 69) {
-            if (plano === "fit") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoFit + adicional60;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoFit_2 + adicional60;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoFit_3 + adicional60;
-              }
-            } else if (plano === "masterPlus") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoMasterPlus + adicional60;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoMasterPlus_2 + adicional60;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoMasterPlus_3 + adicional60;
-              }
-            }
-          } else if (idade >= 70 && idade <= 79) {
-            if (plano === "fit") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoFit + adicional70;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoFit_2 + adicional70;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoFit_3 + adicional70;
-              }
-            } else if (plano === "masterPlus") {
-              imprimeTotal(0);
-              somaIdade = 0;
-              alert('Plano não compativel com a idade!');
-              return;
-            }
-          } else if (idade >= 80) {
-            if (plano === "fit") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoFit + adicional80;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoFit_2 + adicional80;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoFit_3 + adicional80;
-              }
-            } else if (plano === "masterPlus") {
-              imprimeTotal(0);
-              somaIdade = 0;
-              alert('Plano não compativel com a idade!');
-              return;
-            }
-          }
-          console.log(`calculando valor por idade: ${somaIdade}`);
-          return somaIdade;
-        };
-
-        const contaBeneficiarios = () => {
-          console.log('Calculando...');
-          const qtdFilhos = parseInt(quantidadeFilhos());
-          let somaDependentes =
-            idadeConjugue() > 0 ? 2 + qtdFilhos : 1 + qtdFilhos;
-          console.log(`Contando beneficiários: ${somaDependentes}`);
-          return somaDependentes;
-        };
-
-        const calculaTaxaDeAdesao = () => {
-          const totalDependentes = contaBeneficiarios();
-          console.log(`calculando taxa de adesão: ${totalDependentes * taxaDeAdesao}`);
-          return totalDependentes * taxaDeAdesao;
-        };
-
-        const calculaValorFilhos = plano => {
-          const qtdFilhos = parseInt(quantidadeFilhos());
-          const totalBeneficiarios = contaBeneficiarios();
-          let somaIdade = 0;
-
-          if (plano === "fit") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoFit * qtdFilhos;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoFit_2 * qtdFilhos;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoFit_3 * qtdFilhos;
-              }
-            } else if (plano === "masterPlus") {
-              if (totalBeneficiarios === 1) {
-                somaIdade = valorPlanoMasterPlus * qtdFilhos;
-              } else if (totalBeneficiarios === 2) {
-                somaIdade = valorPlanoMasterPlus_2 * qtdFilhos;
-              } else if (totalBeneficiarios >= 3) {
-                somaIdade = valorPlanoMasterPlus_3 * qtdFilhos;
-              }
-            }
-            console.log(`Calculando valor dos filhos: ${somaIdade}`);
-            return somaIdade;
-        };
-
-        // click do Plano MASTER
-        $("#button-master").click(function () {
-          idadeConjugue(0);
-          quantidadeFilhos(0);
-          imprimeTotal(valorPlanoMaster);
-        });
-
-        // click do Plano FIT
-        $("#button-fit").click(function () {
-          let valorTotal = calculaValorIdade('fit', valorPlanoFit, true);
-          if(parseInt(idadeConjugue()) > 0) {
-            valorTotal += calculaValorIdade('fit', valorPlanoFit, false);
-          }
-          if(parseInt(quantidadeFilhos()) > 0) {
-            valorTotal += calculaValorFilhos('fit');
-          }
-          imprimeTotal(valorTotal);
-        });
-
-        // click do Plano MASTER+
-        $("#button-master-plus").click(function () {
-          let valorTotal = calculaValorIdade('masterPlus', valorPlanoMasterPlus, true);
-          if(parseInt(idadeConjugue()) > 0) {
-            valorTotal += calculaValorIdade('masterPlus', valorPlanoMasterPlus, false);
-          }
-          if(parseInt(quantidadeFilhos()) > 0) {
-            valorTotal += calculaValorFilhos('masterPlus');
-          }
-          imprimeTotal(valorTotal);
-        });
-      });
-  </script>
-  <body>
-    <fieldset>
-      <div class="panel panel-primary">
+  <body style="width: 100%">
+    <div style="display: flex; justify-content: center; margin-top: 60px">
+      <div class="panel panel-primary" style="width: 90%">
         <div class="panel-heading">Calculadora Plano</div>
 
         <div class="panel-body">
@@ -234,7 +35,7 @@
 
           <!-- Text input-->
           <div class="form-group">
-            <label class="col-12 control-label" for="vinculo"
+            <label class="col-12 labelFront" for="vinculo"
               >Idade Titular: <h11>*</h11></label
             >
             <div class="col-12">
@@ -254,7 +55,7 @@
           </div>
 
           <div class="form-group">
-            <label class="col-12 control-label" for="vinculo"
+            <label class="col-12 labelFront" for="vinculo"
               >Idade do Cônjugue: <h11>*</h11></label
             >
             <div class="col-12">
@@ -274,7 +75,7 @@
           </div>
 
           <div class="form-group">
-            <label class="col-12 control-label" for="vinculo"
+            <label class="col-12 labelFront" for="vinculo"
               >Filhos: <h11>*</h11></label
             >
             <div class="col-12">
@@ -294,8 +95,8 @@
           </div>
 
           <!-- Button (Double) -->
-          <div class="form-group">
-            <label class="col-12 control-label" for="Cadastrar"></label>
+          <div class="form-group" style="bottom: 0px;">
+            <label class="col-12 labelFront" for="Cadastrar"></label>
             <div class="col-md-8">
               <button id="button-master" name="Cadastrar" class="btn btn-blue">
                 MASTER
@@ -314,6 +115,211 @@
           </div>
         </div>
       </div>
-    </fieldset>
+    </div>
   </body>
+  <script>
+    $(function () {
+      let somaTotal = 0;
+
+      // valores dos planos
+      const valorPlanoMaster = 22.9;
+      const valorPlanoFit = 56.9;
+      const valorPlanoMasterPlus = 67.12;
+
+      const valorPlanoFit_2 = 35.29;
+      const valorPlanoFit_3 = 28.45;
+
+      const valorPlanoMasterPlus_2 = 44.97;
+      const valorPlanoMasterPlus_3 = 38.25;
+
+      const taxaDeAdesao = 7;
+
+      // adicional por idade
+      const adicional50 = 0;
+      const adicional60 = 29;
+      const adicional70 = 39;
+      const adicional80 = 80;
+
+      const imprimeTotal = (value) => {
+        $("#somaTotal").val(
+          `R$ ${parseFloat(value).toFixed(2).replace(".", ",")}`
+        );
+      };
+
+      const idadeConjugue = (value) => {
+        if (Number.isInteger(value)) {
+          $("#idade-conjugue").val(value);
+          return;
+        }
+        return $("#idade-conjugue").val();
+      };
+
+      const quantidadeFilhos = (value) => {
+        if (Number.isInteger(value)) {
+          $("#quantidade-filhos").val(value);
+          return;
+        }
+        return $("#quantidade-filhos").val();
+      };
+
+      const calculaValorIdade = (plano, valorPlano, isTitular) => {
+        const totalBeneficiarios = contaBeneficiarios();
+        const idade = isTitular
+          ? $("#idade-titular").val()
+          : $("#idade-conjugue").val();
+        let somaIdade = valorPlano;
+        if (idade <= 59) {
+          if (plano === "fit") {
+            if (totalBeneficiarios === 1) {
+              somaIdade = valorPlanoFit;
+            } else if (totalBeneficiarios === 2) {
+              somaIdade = valorPlanoFit_2;
+            } else if (totalBeneficiarios >= 3) {
+              somaIdade = valorPlanoFit_3;
+            }
+          } else if (plano === "masterPlus") {
+            if (totalBeneficiarios === 1) {
+              somaIdade = valorPlanoMasterPlus;
+            } else if (totalBeneficiarios === 2) {
+              somaIdade = valorPlanoMasterPlus_2;
+            } else if (totalBeneficiarios >= 3) {
+              somaIdade = valorPlanoMasterPlus_3;
+            }
+          }
+        } else if (idade >= 60 && idade <= 69) {
+          if (plano === "fit") {
+            if (totalBeneficiarios === 1) {
+              somaIdade = valorPlanoFit + adicional60;
+            } else if (totalBeneficiarios === 2) {
+              somaIdade = valorPlanoFit_2 + adicional60;
+            } else if (totalBeneficiarios >= 3) {
+              somaIdade = valorPlanoFit_3 + adicional60;
+            }
+          } else if (plano === "masterPlus") {
+            if (totalBeneficiarios === 1) {
+              somaIdade = valorPlanoMasterPlus + adicional60;
+            } else if (totalBeneficiarios === 2) {
+              somaIdade = valorPlanoMasterPlus_2 + adicional60;
+            } else if (totalBeneficiarios >= 3) {
+              somaIdade = valorPlanoMasterPlus_3 + adicional60;
+            }
+          }
+        } else if (idade >= 70 && idade <= 79) {
+          if (plano === "fit") {
+            if (totalBeneficiarios === 1) {
+              somaIdade = valorPlanoFit + adicional70;
+            } else if (totalBeneficiarios === 2) {
+              somaIdade = valorPlanoFit_2 + adicional70;
+            } else if (totalBeneficiarios >= 3) {
+              somaIdade = valorPlanoFit_3 + adicional70;
+            }
+          } else if (plano === "masterPlus") {
+            imprimeTotal(0);
+            somaIdade = 0;
+            alert("Plano não compativel com a idade!");
+            return;
+          }
+        } else if (idade >= 80) {
+          if (plano === "fit") {
+            if (totalBeneficiarios === 1) {
+              somaIdade = valorPlanoFit + adicional80;
+            } else if (totalBeneficiarios === 2) {
+              somaIdade = valorPlanoFit_2 + adicional80;
+            } else if (totalBeneficiarios >= 3) {
+              somaIdade = valorPlanoFit_3 + adicional80;
+            }
+          } else if (plano === "masterPlus") {
+            imprimeTotal(0);
+            somaIdade = 0;
+            alert("Plano não compativel com a idade!");
+            return;
+          }
+        }
+        console.log(`calculando valor por idade: ${somaIdade}`);
+        return somaIdade;
+      };
+
+      const contaBeneficiarios = () => {
+        console.log("Calculando...");
+        const qtdFilhos = parseInt(quantidadeFilhos());
+        let somaDependentes =
+          idadeConjugue() > 0 ? 2 + qtdFilhos : 1 + qtdFilhos;
+        console.log(`Contando beneficiários: ${somaDependentes}`);
+        return somaDependentes;
+      };
+
+      const calculaTaxaDeAdesao = () => {
+        const totalDependentes = contaBeneficiarios();
+        console.log(
+          `calculando taxa de adesão: ${totalDependentes * taxaDeAdesao}`
+        );
+        return totalDependentes * taxaDeAdesao;
+      };
+
+      const calculaValorFilhos = (plano) => {
+        const qtdFilhos = parseInt(quantidadeFilhos());
+        const totalBeneficiarios = contaBeneficiarios();
+        let somaIdade = 0;
+
+        if (plano === "fit") {
+          if (totalBeneficiarios === 1) {
+            somaIdade = valorPlanoFit * qtdFilhos;
+          } else if (totalBeneficiarios === 2) {
+            somaIdade = valorPlanoFit_2 * qtdFilhos;
+          } else if (totalBeneficiarios >= 3) {
+            somaIdade = valorPlanoFit_3 * qtdFilhos;
+          }
+        } else if (plano === "masterPlus") {
+          if (totalBeneficiarios === 1) {
+            somaIdade = valorPlanoMasterPlus * qtdFilhos;
+          } else if (totalBeneficiarios === 2) {
+            somaIdade = valorPlanoMasterPlus_2 * qtdFilhos;
+          } else if (totalBeneficiarios >= 3) {
+            somaIdade = valorPlanoMasterPlus_3 * qtdFilhos;
+          }
+        }
+        console.log(`Calculando valor dos filhos: ${somaIdade}`);
+        return somaIdade;
+      };
+
+      // click do Plano MASTER
+      $("#button-master").click(function () {
+        idadeConjugue(0);
+        quantidadeFilhos(0);
+        imprimeTotal(valorPlanoMaster);
+      });
+
+      // click do Plano FIT
+      $("#button-fit").click(function () {
+        let valorTotal = calculaValorIdade("fit", valorPlanoFit, true);
+        if (parseInt(idadeConjugue()) > 0) {
+          valorTotal += calculaValorIdade("fit", valorPlanoFit, false);
+        }
+        if (parseInt(quantidadeFilhos()) > 0) {
+          valorTotal += calculaValorFilhos("fit");
+        }
+        imprimeTotal(valorTotal);
+      });
+
+      // click do Plano MASTER+
+      $("#button-master-plus").click(function () {
+        let valorTotal = calculaValorIdade(
+          "masterPlus",
+          valorPlanoMasterPlus,
+          true
+        );
+        if (parseInt(idadeConjugue()) > 0) {
+          valorTotal += calculaValorIdade(
+            "masterPlus",
+            valorPlanoMasterPlus,
+            false
+          );
+        }
+        if (parseInt(quantidadeFilhos()) > 0) {
+          valorTotal += calculaValorFilhos("masterPlus");
+        }
+        imprimeTotal(valorTotal);
+      });
+    });
+  </script>
 </html>
