@@ -1,2 +1,3 @@
-# calculadora-de-planos
-Projeto simples de uma calculador de Planos usando Bootstrap e JQuery.
+Simple system of a life insurance broker's plan calculator.
+
+JQuery and Bootstrap
